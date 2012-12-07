@@ -2,20 +2,55 @@
 <html>
     <head>
         <title>Bubble Sound Party !</title>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <link rel="stylesheet" href="/css/bootstrap.css">
         <link rel="stylesheet" href="/css/bootstrap-responsive.css">
+        <link rel="stylesheet" href="/css/style.css">
     </head>
     <body>
-        <div id="header">
-            <p>Header</p>
-        </div>
-        <div id="content">
-            <div id="canvas">
-                
+        <div id="header" class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="/">Bubble Sound Party</a>
+                    <div class="nav-collapse collapse">
+                        <form class="navbar-form">
+                            <label class="radio inline">
+                                <input type="radio" name="mode" value="solo" checked>
+                                Solo
+                            </label>
+                            <label class="radio inline">
+                                <input type="radio" name="mode" value="multi">
+                                Multi
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label class="checkbox inline">
+                                <input type="checkbox" name="sound" value="on">
+                                <i class="icon-music icon-white"></i>
+                            </label>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="footer">
-            
+        <div id="content">
+            <canvas id="canvas" width="800" height="600">
+            </canvas>
         </div>
+        <div id="footer">
+
+        </div>
+        
+        <!-- Javascripts -->
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <script type="text/javascript" src="/js/ocanvas.js"></script>
+        <script type="text/javascript" src="/js/audiolet.js"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/js/main.js"></script>
     </body>
 </html>

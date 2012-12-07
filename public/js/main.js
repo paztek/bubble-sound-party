@@ -21,7 +21,22 @@ document.ontouchmove = function(e) {
     Bubble.hslaSupport = contains(style.backgroundColor, 'rgba') || contains(style.backgroundColor, 'hsla');
 })();
 
-Bubble.canvas = oCanvas.create({ canvas: "#canvas", background: "#222" });
+(function() {
+    var canvas = document.getElementById('canvas'),
+    context = canvas.getContext('2d');
+
+    // resize the canvas to fill browser window dynamically
+    window.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+    }
+    
+    resizeCanvas();
+})();
+
+Bubble.canvas = oCanvas.create({ canvas: "#canvas", background: "#EEE" });
 
 console.log('width : ' + canvas.width);
 console.log('height : ' + canvas.height);
@@ -40,11 +55,11 @@ Bubble.canvas.bind('mouseup touchend', function(event) {
         var x = event.x;
         var y = event.y;
         
-        var hue = x / Bubble.canvas.width * 360 + 60;
+        var hue = x / Bubble.canvas.width * 360 + 30;
         var sat = 100;
         var light = y / Bubble.canvas.height * 100;
         
-        var radius = Bubble.canvas.width/20;
+        var radius = Bubble.canvas.width / 20;
         
         if (Bubble.canvas.startTime) {
             radius = Math.min(Math.max(5, (+new Date() - Bubble.canvas.startTime) / 2), Bubble.canvas.width / 5);
@@ -64,32 +79,39 @@ Bubble.socket.on('bubble', function(data) {
 
 var launchBubble = function(hue, sat, light, x, y, radius) {
     
-    var rgb = hslToRgb(hue, sat, light);
-    var fill = 'rgb(' + rgb.R + ', ' + rgb.G + ', ' + rgb.B + ')';
+    var rgbFillStart = hslToRgb(hue, sat, light);
+    var fillStart = 'rgb(' + rgbFillStart.R + ', ' + rgbFillStart.G + ', ' + rgbFillStart.B + ')';
+    var rgbStrokeStart = hslToRgb(hue, sat, light / 3);
+    var strokeStart = 'rgb(' + rgbStrokeStart.R + ', ' + rgbStrokeStart.G + ', ' + rgbStrokeStart.B + ')';
     
-    console.log(fill);
+    var rgbFillEnd = hslToRgb(hue, sat, 0);
+    var fillEnd = 'rgb(' + rgbFillEnd.R + ', ' + rgbFillEnd.G + ', ' + rgbFillEnd.B + ')';
     
-    var rgbEnd = hslToRgb(hue, sat, 0);
-    var fillEnd = 'rgb(' + rgbEnd.R + ', ' + rgbEnd.G + ', ' + rgbEnd.B + ')';
-    
-    console.log(fillEnd);
+    var xEnd = x + (Math.random() * (Bubble.canvas.width / 5) - (Bubble.canvas.width / 10));
+    var yEnd = Bubble.canvas.height - radius;
     
     var circle = Bubble.canvas.display.ellipse({
-        x : x,
-        y : y,
-        radius : radius,
-        fill : fill
+        x: x,
+        y: y,
+        radius: radius,
+        fill: fillStart,
+        stroke: '1px ' + strokeStart,
+        shadow: '2px 2px 5px #000',
+        opacity: 1
     }).add().animate({
-        y : Bubble.canvas.height,
-        fill: fillEnd
+        x: xEnd,
+        y: yEnd,
+        fill: fillEnd,
+        opacity: 0.2
     }, {
         duration : 'long',
-        easing : 'ease-in-cubic',
+        easing : 'ease-out-bounce',
         callback : function() {
             this.remove();
         }
     });
 };
+
 function hslToRgb(h, s, l) {
     h /= 360;
     s /= 100;

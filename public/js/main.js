@@ -2,7 +2,7 @@ var Bubble = {};
 
 // Prevent scroling on the iPhone / iPad
 document.ontouchstart = function(e) {
-    e.preventDefault();
+    //e.preventDefault();
 };
 document.ontouchmove = function(e) {
     e.preventDefault();

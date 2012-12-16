@@ -34,6 +34,12 @@ document.ontouchmove = function(e) {
     }
     
     resizeCanvas();
+    
+    var multiRadios = $('input[type="radio"][name="mode"]');
+    Bubble.multi = multiRadios.filter(':checked').val() == 'multi';
+    multiRadios.on('change', function(event) {
+        Bubble.multi = multiRadios.filter(':checked').val() == 'multi';
+    });
 })();
 
 Bubble.canvas = oCanvas.create({ canvas: "#canvas", background: "#EEE" });
@@ -41,7 +47,7 @@ Bubble.canvas = oCanvas.create({ canvas: "#canvas", background: "#EEE" });
 console.log('width : ' + canvas.width);
 console.log('height : ' + canvas.height);
 
-Bubble.audiolet = new Audiolet();
+//Bubble.audiolet = new Audiolet();
 
 Bubble.socket = io.connect();
 
@@ -65,7 +71,9 @@ Bubble.canvas.bind('mouseup touchend', function(event) {
             radius = Math.min(Math.max(5, (+new Date() - Bubble.canvas.startTime) / 2), Bubble.canvas.width / 5);
         }
         
-        Bubble.socket.emit('bubble', { hue: hue, sat: sat, light: light, x: x, y: y, radius: radius });
+        if (Bubble.multi) {
+            Bubble.socket.emit('bubble', { hue: hue, sat: sat, light: light, x: x, y: y, radius: radius });
+        }
         
         launchBubble(hue, sat, light, x, y, radius);
     } else {
@@ -74,7 +82,9 @@ Bubble.canvas.bind('mouseup touchend', function(event) {
 });
 
 Bubble.socket.on('bubble', function(data) {
-    launchBubble(data.hue, data.sat, data.light, data.x, data.y, data.radius);
+    if (Bubble.multi) {
+        launchBubble(data.hue, data.sat, data.light, data.x, data.y, data.radius);
+    }
 });
 
 var launchBubble = function(hue, sat, light, x, y, radius) {

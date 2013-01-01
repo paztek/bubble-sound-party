@@ -1,23 +1,35 @@
+
+/**
+ * App dependencies
+ */
+
 var express = require('express'),
     app = express(),
-    server = require('http').createServer(app),
-    io = require('socket.io').listen(server, { 'log level': 0 }),
-    path = require('path');
+    http = require('http'),
+    path = require('path'),
+    io = require('socket.io'),
+    config = require('./config');
 
 app.configure(function() {
+    app.set('mode', config.env);
+    app.set('port', config.port);
+    app.use(express.favicon());
+    app.use(express.logger('dev'));
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
-/*
-app.get('/', function(req, res) {
-    res.sendfile(__dirname + '/public/index.html');
-});
-*/
+var server = http.createServer(app);
 
-io.sockets.on('connection', function(socket) {
+var sio = io.listen(server, {
+    'log level': 0
+});
+
+sio.sockets.on('connection', function(socket) {
     socket.on('bubble', function(data) {
         socket.broadcast.emit('bubble', data);
     });
 });
 
-server.listen(8080);
+server.listen(app.get('port'), function() {
+    console.log('Express server listening on port ' + app.get('port') + ' in ' + app.get('mode') + ' mode');
+});

@@ -1,6 +1,6 @@
 {
   "name": "bubble-sound-party",
-  "description": "A cool multi user experiment with sound and bubbles",
+  "description": "A cool multi user experiment with sound and bubbles (Ok, no sound yet, but still).",
   "version": "0.0.1",
   "private": false,
   "scripts": {

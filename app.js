@@ -21,7 +21,9 @@ app.configure(function() {
 var server = http.createServer(app);
 
 var sio = io.listen(server, {
-    'log level': 0
+    'log level': 0,
+    'flash policy port': -1,
+    'transports': ['flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']
 });
 
 sio.sockets.on('connection', function(socket) {
